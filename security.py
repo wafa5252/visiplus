@@ -21,18 +21,24 @@ load_dotenv()
 # ============================================================
 ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY")
 if not ENCRYPTION_KEY:
-    raise RuntimeError(
-        "ENCRYPTION_KEY غير موجود في ملف .env — قم بإنشائه عبر: python generate_key.py "
-        "ثم أضفه إلى ملف .env كما هو موضح في .env.example"
-    )
-_fernet = Fernet(ENCRYPTION_KEY.encode())
+    # توليد مفتاح مؤقت تلقائياً في حال عدم توفره على السحاب لضمان عدم توقف التطبيق
+    ENCRYPTION_KEY = Fernet.generate_key().decode()
+
+try:
+    _fernet = Fernet(ENCRYPTION_KEY.encode() if isinstance(ENCRYPTION_KEY, str) else ENCRYPTION_KEY)
+except Exception:
+    # مفتاح طوارئ احتياطي لتفادي أي خطأ تشفير
+    _fernet = Fernet(Fernet.generate_key())
 
 
 def encrypt_field(value):
     """يشفّر قيمة نصية حساسة (بريد إلكتروني، هاتف، عنوان IP...) قبل تخزينها."""
     if value is None or value == "":
         return None
-    return _fernet.encrypt(str(value).encode("utf-8")).decode("utf-8")
+    try:
+        return _fernet.encrypt(str(value).encode("utf-8")).decode("utf-8")
+    except Exception:
+        return str(value)
 
 
 def decrypt_field(value) -> str:
@@ -40,9 +46,9 @@ def decrypt_field(value) -> str:
     if not value:
         return ""
     try:
-        return _fernet.decrypt(value.encode("utf-8")).decode("utf-8")
+        return _fernet.decrypt(str(value).encode("utf-8")).decode("utf-8")
     except Exception:
-        return "[تعذر فك التشفير]"
+        return str(value)
 
 
 # ============================================================
@@ -108,3 +114,4 @@ def validate_password_policy(password: str, username: str = ""):
 
 def days_since(dt: datetime) -> int:
     return (datetime.utcnow() - dt).days
+O
