@@ -18,12 +18,15 @@ from security import (
 from auth import attempt_login, check_session_timeout, touch_session, logout
 from audit import log_action
 
+# استدعاء وكلاء الذكاء الاصطناعي (AI Agents) لتفعيل التحليل التنبؤي والتشخيص الذكي
+import agents 
+
 from ui import it_portal, executive_portal, employee_portal
 
 
 st.set_page_config(
     page_title="VisiPulse | نظام الإنذار المبكر وحوكمة البنية التحتية",
-    page_icon="🏥",
+    page_icon="H",
     layout="wide",
 )
 
@@ -44,10 +47,41 @@ st.markdown(_RTL_CSS, unsafe_allow_html=True)
 
 ROLE_LABELS = {"it": "تقنية المعلومات", "executive": "الإدارة العليا", "employee": "موظف"}
 
+VISIPULSE_LOGO_SVG = """
+<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg" style="background: transparent; width: 100%; height: auto;">
+  <defs>
+    <linearGradient id="streamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1E40AF" />
+      <stop offset="50%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#06B6D4" />
+    </linearGradient>
+    <linearGradient id="pulseGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4" />
+      <stop offset="100%" stop-color="#10B981" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <rect width="100%" height="100%" rx="16" fill="#0F172A" opacity="0.95" />
+  <path d="M 50 110 C 180 40, 320 180, 650 90" fill="none" stroke="url(#streamGrad)" stroke-width="4" stroke-linecap="round" opacity="0.4" />
+  <path d="M 70 135 C 200 65, 340 205, 630 115" fill="none" stroke="url(#streamGrad)" stroke-width="2" stroke-linecap="round" opacity="0.25" />
+  <path d="M 40 120 L 110 120 L 125 90 L 140 150 L 160 100 L 175 130 L 190 120 L 230 120" 
+        fill="none" stroke="url(#pulseGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)" />
+  <text x="250" y="115" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="58" font-weight="800" letter-spacing="1.5">
+    <tspan fill="#F8FAFC">Visi</tspan><tspan fill="#38BDF8">Pulse</tspan>
+  </text>
+  <text x="254" y="150" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="500" fill="#94A3B8" letter-spacing="4">
+    THE FLOW OF SMART HEALTHCARE
+  </text>
+  <circle cx="615" cy="98" r="5" fill="#34D399" filter="url(#glow)" />
+</svg>
+"""
+
 
 @st.cache_resource
 def _bootstrap_db():
-    """يُنشئ الجداول ويفعّل قيود سجل التدقيق مرة واحدة فقط عند إقلاع التطبيق."""
     init_db()
     return True
 
@@ -56,9 +90,8 @@ _bootstrap_db()
 
 
 def _login_screen(session):
-    st.markdown("## 🏥 VisiPulse")
-    st.caption("نظام الإنذار المبكر وحوكمة البنية التحتية للمنشآت الصحية")
-    st.divider()
+    st.markdown(VISIPULSE_LOGO_SVG, unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
 
     _, mid, _ = st.columns([1, 1.4, 1])
     with mid:
@@ -82,7 +115,7 @@ def _login_screen(session):
 
 
 def _force_password_change_screen(session):
-    st.warning("⚠️ يجب تغيير كلمة المرور قبل المتابعة (سياسة أمنية: أول تسجيل دخول أو انتهاء صلاحية دورية)")
+    st.warning("يجب تغيير كلمة المرور قبل المتابعة (سياسة أمنية: أول تسجيل دخول أو انتهاء صلاحية دورية)")
     user = session.query(User).filter(User.id == st.session_state.get("user_id")).first()
     if not user:
         logout(session)
@@ -133,14 +166,15 @@ def _force_password_change_screen(session):
 
 def _sidebar(session, user):
     with st.sidebar:
-        st.markdown(f"### 👋 {user.full_name}")
+        st.markdown(VISIPULSE_LOGO_SVG, unsafe_allow_html=True)
+        st.markdown(f"### {user.full_name}")
         st.caption(f"الدور: {ROLE_LABELS.get(user.role.value, user.role.value)}")
         st.caption(f"القسم: {user.department or '-'}")
         if user.last_login:
             st.caption(f"آخر دخول سابق: {user.last_login:%Y-%m-%d %H:%M}")
         st.divider()
-        st.caption(f"⏱️ مهلة خمول الجلسة: {SESSION_IDLE_MINUTES} دقيقة")
-        if st.button("🔒 تسجيل الخروج", width="stretch"):
+        st.caption(f"مهلة خمول الجلسة: {SESSION_IDLE_MINUTES} دقيقة")
+        if st.button("تسجيل الخروج", width="stretch"):
             logout(session, user.username, user.role.value, "تسجيل خروج يدوي")
             st.rerun()
 
@@ -156,7 +190,7 @@ def main():
         stale_username = st.session_state.get("username")
         stale_role = st.session_state.get("role")
         logout(session, stale_username, stale_role, "انتهاء مهلة خمول الجلسة")
-        st.warning("⏱️ انتهت الجلسة بسبب الخمول. الرجاء تسجيل الدخول مجدداً.")
+        st.warning("انتهت الجلسة بسبب الخمول. الرجاء تسجيل الدخول مجدداً.")
         st.rerun()
         return
 
