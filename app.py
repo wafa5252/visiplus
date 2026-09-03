@@ -4,7 +4,7 @@ from models import User, UserRole
 from security import hash_password, verify_password, encrypt_field
 
 st.set_page_config(
-    page_title="VisiPulse - Predictive Healthcare Governance",
+    page_title="VisiPulse - Predictive Governance",
     layout="wide",
 )
 
@@ -37,27 +37,35 @@ session.commit()
 
 st.markdown("""
     <style>
-    .ai-header {
-        background: linear-gradient(135deg, #090d16 0%, #0f172a 40%, #1e3a8a 100%);
-        padding: 35px 40px;
-        border-radius: 14px;
+    .enterprise-banner {
+        background: linear-gradient(135deg, #090d16 0%, #0f172a 50%, #1e3a8a 100%);
+        padding: 25px 35px;
+        border-radius: 12px;
         color: white;
-        box-shadow: 0 15px 35px -5px rgba(15, 23, 42, 0.4);
+        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.4);
         margin-bottom: 30px;
-        border: 1px solid rgba(56, 189, 248, 0.2);
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 20px;
     }
-    .brand-title {
-        font-size: 28px;
+    .logo-box {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+        flex-shrink: 0;
+    }
+    .banner-title {
+        font-size: 26px;
         font-weight: 800;
         letter-spacing: -0.5px;
         margin: 0;
         color: #ffffff;
-    }
-    .brand-subtitle {
-        font-size: 14px;
-        color: #7dd3fc;
-        margin: 6px 0 0 0;
-        font-weight: 500;
     }
     .portal-card {
         background-color: #f8fafc;
@@ -70,7 +78,7 @@ st.markdown("""
     .portal-card h4 {
         margin-top: 0;
         color: #1e3a8a;
-        font-size: 16px;
+        font-size: 15px;
         border-bottom: 2px solid #e2e8f0;
         padding-bottom: 8px;
     }
@@ -86,9 +94,15 @@ st.markdown("""
     }
     </style>
     
-    <div class="ai-header">
-        <h1 class="brand-title">VisiPulse Predictive AI Governance</h1>
-        <p class="brand-subtitle">نظام الحوكمة الصحية الاستباقي - وكلاء الذكاء الاصطناعي لرصد الأعطال، البنية التحتية، وإدارة عقود المقاولين</p>
+    <div class="enterprise-banner">
+        <div class="logo-box">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+            </svg>
+        </div>
+        <div>
+            <h1 class="banner-title">VisiPulse</h1>
+        </div>
     </div>
 """, unsafe_allow_html=True)
 
