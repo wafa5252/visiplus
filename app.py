@@ -90,11 +90,11 @@ _bootstrap_db()
 
 
 def _login_screen(session):
-    st.markdown(VISIPULSE_LOGO_SVG, unsafe_allow_html=True)
-    st.markdown("<br>", unsafe_allow_html=True)
-
     _, mid, _ = st.columns([1, 1.4, 1])
     with mid:
+        st.markdown(VISIPULSE_LOGO_SVG, unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
+
         with st.form("login_form"):
             username = st.text_input("اسم المستخدم")
             password = st.text_input("كلمة المرور", type="password")
