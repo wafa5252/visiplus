@@ -41,44 +41,49 @@ html, body, [class*="css"] {
 [data-testid="stMetricValue"], [data-testid="stMetricDelta"] { direction: ltr; }
 section[data-testid="stSidebar"] { direction: rtl; text-align: right; }
 div[data-testid="stForm"] { direction: rtl; text-align: right; }
-
-.visipulse-logo-box {
-    background: #0F172A;
-    padding: 24px;
-    border-radius: 16px;
-    text-align: center;
-    border: 1px solid #1E293B;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    margin-bottom: 10px;
-}
-.visipulse-title {
-    font-size: 42px;
-    font-weight: 800;
-    margin: 0;
-    letter-spacing: 1px;
-    font-family: system-ui, -apple-system, sans-serif;
-}
-.visipulse-subtitle {
-    font-size: 11px;
-    font-weight: 600;
-    color: #94A3B8;
-    margin-top: 6px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-}
 </style>
 """
 st.markdown(_RTL_CSS, unsafe_allow_html=True)
 
 ROLE_LABELS = {"it": "تقنية المعلومات", "executive": "الإدارة العليا", "employee": "موظف"}
 
-VISIPULSE_LOGO_HTML = """
-<div class="visipulse-logo-box">
-    <div class="visipulse-title">
-        <span style="color: #F8FAFC;">Visi</span><span style="color: #38BDF8;">Pulse</span>
-    </div>
-    <div class="visipulse-subtitle">THE FLOW OF SMART HEALTHCARE</div>
-</div>
+VISIPULSE_LOGO_SVG = """
+<svg viewBox="-80 -10 860 220" xmlns="http://www.w3.org/2000/svg" style="background: transparent; width: 100%; height: auto;">
+  <defs>
+    <linearGradient id="streamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1E40AF" />
+      <stop offset="50%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#06B6D4" />
+    </linearGradient>
+    <linearGradient id="pulseGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4" />
+      <stop offset="100%" stop-color="#10B981" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <rect x="-80" y="-10" width="860" height="220" rx="16" fill="#0F172A" opacity="0.95" />
+  
+  <!-- الخلفية الديناميكية والأمواج -->
+  <path d="M -40 110 C 100 20, 320 180, 760 70" fill="none" stroke="url(#streamGrad)" stroke-width="4" stroke-linecap="round" opacity="0.45" />
+  <path d="M -20 135 C 120 45, 340 205, 740 95" fill="none" stroke="url(#streamGrad)" stroke-width="2.5" stroke-linecap="round" opacity="0.3" />
+  
+  <!-- خط نبضات القلب -->
+  <path d="M -50 115 L 20 115 L 40 85 L 60 145 L 85 90 L 105 125 L 125 115 L 175 115" 
+        fill="none" stroke="url(#pulseGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)" />
+  
+  <!-- النصوص والكلمات -->
+  <text x="195" y="105" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="56" font-weight="800" letter-spacing="1.5">
+    <tspan fill="#F8FAFC">Visi</tspan><tspan fill="#38BDF8">Pulse</tspan>
+  </text>
+  <text x="200" y="142" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13.5" font-weight="600" fill="#94A3B8" letter-spacing="3.8">
+    THE FLOW OF SMART HEALTHCARE
+  </text>
+  
+ج  <circle cx="725" cy="78" r="5" fill="#34D399" filter="url(#glow)" />
+</svg>
 """
 
 
@@ -94,7 +99,7 @@ _bootstrap_db()
 def _login_screen(session):
     _, mid, _ = st.columns([1, 1.4, 1])
     with mid:
-        st.markdown(VISIPULSE_LOGO_HTML, unsafe_allow_html=True)
+        st.markdown(VISIPULSE_LOGO_SVG, unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
 
         with st.form("login_form"):
@@ -168,7 +173,7 @@ def _force_password_change_screen(session):
 
 def _sidebar(session, user):
     with st.sidebar:
-        st.markdown(VISIPULSE_LOGO_HTML, unsafe_allow_html=True)
+        st.markdown(VISIPULSE_LOGO_SVG, unsafe_allow_html=True)
         st.markdown(f"### {user.full_name}")
         st.caption(f"الدور: {ROLE_LABELS.get(user.role.value, user.role.value)}")
         st.caption(f"القسم: {user.department or '-'}")
