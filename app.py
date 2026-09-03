@@ -8,7 +8,6 @@ VisiPulse - نظام الإنذار المبكر وحوكمة البنية ال�
 from datetime import datetime
 
 import streamlit as st
-import streamlit.components.v1 as components
 
 from database import init_db, get_session
 from models import User, UserRole, PasswordHistory
@@ -42,30 +41,34 @@ html, body, [class*="css"] {
 [data-testid="stMetricValue"], [data-testid="stMetricDelta"] { direction: ltr; }
 section[data-testid="stSidebar"] { direction: rtl; text-align: right; }
 div[data-testid="stForm"] { direction: rtl; text-align: right; }
+
+/* إزالة الحشو العلوي الافتراضي في ستريمليت لدمج الهيدر باحترافية */
+.block-container {
+    padding-top: 1.5rem !important;
+}
 </style>
 """
 st.markdown(_RTL_CSS, unsafe_allow_html=True)
 
 ROLE_LABELS = {"it": "تقنية المعلومات", "executive": "الإدارة العليا", "employee": "موظف"}
 
-def render_visipulse_logo():
-    logo_html = """
-    <div style="background: #0F172A; padding: 22px 15px; border-radius: 14px; border: 1px solid #1E293B; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4); text-align: center; direction: ltr;">
-        <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
-            <svg width="36" height="24" viewBox="0 0 100 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M 0 25 L 22 25 L 32 8 L 42 42 L 52 14 L 62 32 L 72 25 L 100 25" stroke="#10B981" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <div style="font-size: 36px; font-weight: 800; font-family: system-ui, sans-serif; letter-spacing: 1px; line-height: 1;">
-                <span style="color: #F8FAFC;">Visi</span><span style="color: #38BDF8;">Pulse</span>
-            </div>
-            <div style="width: 7px; height: 7px; background-color: #34D399; border-radius: 50%; box-shadow: 0 0 8px #34D399; margin-top: -16px;"></div>
+# تصميم الهيدر العلوي الممتد (مثل أنظمة المستشفيات الطبية الكبرى مثل +Oasis)
+VISIPULSE_TOP_HEADER = """
+<div style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); padding: 16px 28px; border-radius: 12px; border-bottom: 3px solid #0284C7; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; direction: ltr;">
+    <div style="display: flex; align-items: center; gap: 14px;">
+        <svg width="42" height="28" viewBox="0 0 100 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 0 25 L 22 25 L 32 8 L 42 42 L 52 14 L 62 32 L 72 25 L 100 25" stroke="#10B981" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div style="font-size: 32px; font-weight: 800; font-family: system-ui, sans-serif; letter-spacing: 1px; line-height: 1;">
+            <span style="color: #F8FAFC;">Visi</span><span style="color: #38BDF8;">Pulse</span>
         </div>
-        <div style="font-size: 11px; font-weight: 600; color: #94A3B8; margin-top: 8px; letter-spacing: 2.8px; text-transform: uppercase;">
-            THE FLOW OF SMART HEALTHCARE
-        </div>
+        <div style="width: 8px; height: 8px; background-color: #34D399; border-radius: 50%; box-shadow: 0 0 10px #34D399; margin-top: -14px;"></div>
     </div>
-    """
-    components.html(logo_html, height=110)
+    <div style="font-size: 11px; font-weight: 600; color: #94A3B8; letter-spacing: 3px; text-transform: uppercase;">
+        THE FLOW OF SMART HEALTHCARE
+    </div>
+</div>
+"""
 
 
 @st.cache_resource
@@ -78,10 +81,12 @@ _bootstrap_db()
 
 
 def _login_screen(session):
-    _, mid, _ = st.columns([1, 1.4, 1])
+    # عرض الهيدر العلوي البارز في صفحة الدخول
+    st.markdown(VISIPULSE_TOP_HEADER, unsafe_allow_html=True)
+    
+    _, mid, _ = st.columns([1, 1.2, 1])
     with mid:
-        render_visipulse_logo()
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<h3 style='text-align: center; color: #334155; margin-bottom: 20px;'>تسجيل الدخول للنظام</h3>", unsafe_allow_html=True)
 
         with st.form("login_form"):
             username = st.text_input("اسم المستخدم")
@@ -154,8 +159,8 @@ def _force_password_change_screen(session):
 
 def _sidebar(session, user):
     with st.sidebar:
-        render_visipulse_logo()
-        st.markdown(f"### {user.full_name}")
+        st.markdown("### 🏥 VisiPulse")
+        st.markdown(f"**المستخدم:** {user.full_name}")
         st.caption(f"الدور: {ROLE_LABELS.get(user.role.value, user.role.value)}")
         st.caption(f"القسم: {user.department or '-'}")
         if user.last_login:
@@ -190,6 +195,9 @@ def main():
         st.error("الحساب غير متاح حالياً. الرجاء التواصل مع إدارة تقنية المعلومات.")
         st.rerun()
         return
+
+    # عرض الهيدر العلوي حتى بعد تسجيل الدخول في الواجهات الرئيسية
+    st.markdown(VISIPULSE_TOP_HEADER, unsafe_allow_html=True)
 
     _sidebar(session, user)
 
