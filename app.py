@@ -48,7 +48,7 @@ st.markdown(_RTL_CSS, unsafe_allow_html=True)
 ROLE_LABELS = {"it": "تقنية المعلومات", "executive": "الإدارة العليا", "employee": "موظف"}
 
 VISIPULSE_LOGO_SVG = """
-<svg viewBox="-40 0 790 200" xmlns="http://www.w3.org/2000/svg" style="background: transparent; width: 100%; height: auto;">
+<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg" style="background: transparent; width: 100%; height: auto;">
   <defs>
     <linearGradient id="streamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#1E40AF" />
@@ -64,18 +64,18 @@ VISIPULSE_LOGO_SVG = """
       <feComposite in="SourceGraphic" in2="blur" operator="over" />
     </filter>
   </defs>
-  <rect x="-40" y="0" width="790" height="200" rx="16" fill="#0F172A" opacity="0.95" />
-  <path d="M 10 100 C 130 20, 330 180, 700 80" fill="none" stroke="url(#streamGrad)" stroke-width="3.5" stroke-linecap="round" opacity="0.4" />
-  <path d="M 30 125 C 150 45, 350 205, 680 105" fill="none" stroke="url(#streamGrad)" stroke-width="2" stroke-linecap="round" opacity="0.25" />
-  <path d="M 10 110 L 80 110 L 95 80 L 110 140 L 130 90 L 145 120 L 160 110 L 200 110" 
-        fill="none" stroke="url(#pulseGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)" />
-  <text x="230" y="105" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="52" font-weight="800" letter-spacing="1.5">
+  <rect width="100%" height="100%" rx="16" fill="#0F172A" opacity="0.95" />
+  <path d="M 50 110 C 180 40, 320 180, 650 90" fill="none" stroke="url(#streamGrad)" stroke-width="4" stroke-linecap="round" opacity="0.4" />
+  <path d="M 70 135 C 200 65, 340 205, 630 115" fill="none" stroke="url(#streamGrad)" stroke-width="2" stroke-linecap="round" opacity="0.25" />
+  <path d="M 40 120 L 110 120 L 125 90 L 140 150 L 160 100 L 175 130 L 190 120 L 230 120" 
+        fill="none" stroke="url(#pulseGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)" />
+  <text x="250" y="115" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="58" font-weight="800" letter-spacing="1.5">
     <tspan fill="#F8FAFC">Visi</tspan><tspan fill="#38BDF8">Pulse</tspan>
   </text>
-  <text x="234" y="138" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="500" fill="#94A3B8" letter-spacing="3.5">
+  <text x="254" y="150" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="500" fill="#94A3B8" letter-spacing="4">
     THE FLOW OF SMART HEALTHCARE
   </text>
-  <circle cx="665" cy="88" r="4.5" fill="#34D399" filter="url(#glow)" />
+  <circle cx="615" cy="98" r="5" fill="#34D399" filter="url(#glow)" />
 </svg>
 """
 
