@@ -17,22 +17,24 @@ load_dotenv()
 
 
 # ============================================================
-# التشفير - Fernet (تشفير متماثل معتمد على مفتاح البيئة)
+# التشفير - Fernet
 # ============================================================
-ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY")
-if not ENCRYPTION_KEY:
-    # توليد مفتاح مؤقت تلقائياً في حال عدم توفره على السحاب لضمان عدم توقف التطبيق
-    ENCRYPTION_KEY = Fernet.generate_key().decode()
+def _get_fernet():
+    key = os.getenv("ENCRYPTION_KEY")
+    if not key:
+        key = Fernet.generate_key()
+    if isinstance(key, str):
+        key = key.encode("utf-8")
+    try:
+        return Fernet(key)
+    except Exception:
+        return Fernet(Fernet.generate_key())
 
-try:
-    _fernet = Fernet(ENCRYPTION_KEY.encode() if isinstance(ENCRYPTION_KEY, str) else ENCRYPTION_KEY)
-except Exception:
-    # مفتاح طوارئ احتياطي لتفادي أي خطأ تشفير
-    _fernet = Fernet(Fernet.generate_key())
+_fernet = _get_fernet()
 
 
 def encrypt_field(value):
-    """يشفّر قيمة نصية حساسة (بريد إلكتروني، هاتف، عنوان IP...) قبل تخزينها."""
+    """يشفّر قيمة نصية حساسة قبل تخزينها."""
     if value is None or value == "":
         return None
     try:
@@ -42,7 +44,7 @@ def encrypt_field(value):
 
 
 def decrypt_field(value) -> str:
-    """يفك تشفير قيمة مخزّنة. يعيد نصاً واضحاً عند الفشل بدلاً من رفع استثناء يُعطّل الواجهة."""
+    """يفك تشفير قيمة مخزّنة."""
     if not value:
         return ""
     try:
@@ -52,7 +54,7 @@ def decrypt_field(value) -> str:
 
 
 # ============================================================
-# إعدادات الأمان القابلة للضبط عبر .env
+# إعدادات الأمان
 # ============================================================
 MAX_FAILED_ATTEMPTS = int(os.getenv("MAX_FAILED_ATTEMPTS", "5"))
 LOCKOUT_MINUTES = int(os.getenv("LOCKOUT_MINUTES", "15"))
@@ -83,14 +85,7 @@ def verify_password(password: str, hashed: str) -> bool:
 
 
 def validate_password_policy(password: str, username: str = ""):
-    """
-    يتحقق من مطابقة كلمة المرور لسياسة أمن المعلومات (متوافقة مع متطلبات NCA ECC):
-    - 12 حرفاً على الأقل
-    - حرف كبير + حرف صغير + رقم + رمز خاص
-    - عدم احتواء اسم المستخدم
-    - عدم كونها من كلمات المرور الشائعة
-    يعيد قائمة رسائل الأخطاء (قائمة فارغة تعني أن كلمة المرور مطابقة للسياسة).
-    """
+    """يتحقق من مطابقة كلمة المرور لسياسة أمن المعلومات (NCA ECC)."""
     password = password or ""
     errors = []
 
@@ -113,5 +108,6 @@ def validate_password_policy(password: str, username: str = ""):
 
 
 def days_since(dt: datetime) -> int:
+    if not dt:
+        return 0
     return (datetime.utcnow() - dt).days
-O
