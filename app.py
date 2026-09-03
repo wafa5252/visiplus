@@ -47,43 +47,39 @@ st.markdown(_RTL_CSS, unsafe_allow_html=True)
 
 ROLE_LABELS = {"it": "تقنية المعلومات", "executive": "الإدارة العليا", "employee": "موظف"}
 
-VISIPULSE_LOGO_SVG = """
-<svg viewBox="-80 -10 860 220" xmlns="http://www.w3.org/2000/svg" style="background: transparent; width: 100%; height: auto;">
-  <defs>
-    <linearGradient id="streamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#1E40AF" />
-      <stop offset="50%" stop-color="#0284C7" />
-      <stop offset="100%" stop-color="#06B6D4" />
-    </linearGradient>
-    <linearGradient id="pulseGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#06B6D4" />
-      <stop offset="100%" stop-color="#10B981" />
-    </linearGradient>
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="3" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-    </filter>
-  </defs>
-  <rect x="-80" y="-10" width="860" height="220" rx="16" fill="#0F172A" opacity="0.95" />
-  
-  <!-- الخلفية الديناميكية والأمواج -->
-  <path d="M -40 110 C 100 20, 320 180, 760 70" fill="none" stroke="url(#streamGrad)" stroke-width="4" stroke-linecap="round" opacity="0.45" />
-  <path d="M -20 135 C 120 45, 340 205, 740 95" fill="none" stroke="url(#streamGrad)" stroke-width="2.5" stroke-linecap="round" opacity="0.3" />
-  
-  <!-- خط نبضات القلب -->
-  <path d="M -50 115 L 20 115 L 40 85 L 60 145 L 85 90 L 105 125 L 125 115 L 175 115" 
-        fill="none" stroke="url(#pulseGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)" />
-  
-  <!-- النصوص والكلمات -->
-  <text x="195" y="105" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="56" font-weight="800" letter-spacing="1.5">
-    <tspan fill="#F8FAFC">Visi</tspan><tspan fill="#38BDF8">Pulse</tspan>
-  </text>
-  <text x="200" y="142" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13.5" font-weight="600" fill="#94A3B8" letter-spacing="3.8">
-    THE FLOW OF SMART HEALTHCARE
-  </text>
-  
-ج  <circle cx="725" cy="78" r="5" fill="#34D399" filter="url(#glow)" />
-</svg>
+VISIPULSE_LOGO_HTML = """
+<div style="background: #0F172A; padding: 24px 20px; border-radius: 16px; border: 1px solid #1E293B; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4); text-align: center; position: relative; overflow: hidden; direction: ltr; margin-bottom: 5px;">
+    <!-- تدرج خلفية ديناميكي خفيف -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, rgba(30,64,175,0.12) 0%, rgba(2,132,199,0.12) 50%, rgba(6,182,212,0.12) 100%); pointer-events: none;"></div>
+    
+    <div style="display: flex; align-items: center; justify-content: center; gap: 14px; position: relative; z-index: 2;">
+        <!-- أيقونة نبضات القلب -->
+        <div style="display: flex; align-items: center;">
+            <svg width="40" height="26" viewBox="0 0 100 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 5px rgba(16,185,129,0.7));">
+                <path d="M 0 25 L 22 25 L 32 8 L 42 42 L 52 14 L 62 32 L 72 25 L 100 25" stroke="url(#pulseGradInline)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <defs>
+                    <linearGradient id="pulseGradInline" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#06B6D4" />
+                        <stop offset="100%" stop-color="#10B981" />
+                    </linearGradient>
+                </defs>
+            </svg>
+        </div>
+        
+        <!-- اسم النظام -->
+        <div style="font-size: 40px; font-weight: 800; font-family: system-ui, -apple-system, sans-serif; letter-spacing: 1px; line-height: 1.1;">
+            <span style="color: #F8FAFC;">Visi</span><span style="color: #38BDF8;">Pulse</span>
+        </div>
+        
+        <!-- النقطة المضيئة الخضراء -->
+        <div style="width: 8px; height: 8px; background-color: #34D399; border-radius: 50%; box-shadow: 0 0 10px #34D399; margin-top: -18px;"></div>
+    </div>
+    
+    <!-- الوصف التوضيحي -->
+    <div style="font-size: 11.5px; font-weight: 600; color: #94A3B8; margin-top: 8px; letter-spacing: 3.5px; text-transform: uppercase; position: relative; z-index: 2; direction: ltr;">
+        THE FLOW OF SMART HEALTHCARE
+    </div>
+</div>
 """
 
 
@@ -99,7 +95,7 @@ _bootstrap_db()
 def _login_screen(session):
     _, mid, _ = st.columns([1, 1.4, 1])
     with mid:
-        st.markdown(VISIPULSE_LOGO_SVG, unsafe_allow_html=True)
+        st.markdown(VISIPULSE_LOGO_HTML, unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
 
         with st.form("login_form"):
@@ -173,7 +169,7 @@ def _force_password_change_screen(session):
 
 def _sidebar(session, user):
     with st.sidebar:
-        st.markdown(VISIPULSE_LOGO_SVG, unsafe_allow_html=True)
+        st.markdown(VISIPULSE_LOGO_HTML, unsafe_allow_html=True)
         st.markdown(f"### {user.full_name}")
         st.caption(f"الدور: {ROLE_LABELS.get(user.role.value, user.role.value)}")
         st.caption(f"القسم: {user.department or '-'}")
